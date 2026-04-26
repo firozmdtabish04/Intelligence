@@ -1,28 +1,24 @@
-# Use modern, supported Java image
 FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper & config first (better caching)
+# Copy Maven wrapper first
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Give permission to mvnw
+# Give permission ✅ (IMPORTANT)
 RUN chmod +x mvnw
 
-# Download dependencies (cached layer)
+# Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy full project
+# Copy rest of project
 COPY . .
 
-# Build the project
+# Build project
 RUN ./mvnw clean package -DskipTests
 
-# Expose port (Spring Boot default)
 EXPOSE 8080
 
-# Run the JAR (auto-detect jar name)
 CMD ["sh", "-c", "java -jar target/*.jar"]
