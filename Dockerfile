@@ -7,7 +7,7 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Give permission ✅ (IMPORTANT)
+# Give permission
 RUN chmod +x mvnw
 
 # Download dependencies
@@ -15,6 +15,9 @@ RUN ./mvnw dependency:go-offline
 
 # Copy rest of project
 COPY . .
+
+# 🔥 FIX: re-apply permission after overwrite
+RUN chmod +x mvnw
 
 # Build project
 RUN ./mvnw clean package -DskipTests
