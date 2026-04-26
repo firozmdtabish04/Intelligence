@@ -1,11 +1,9 @@
-# Use lightweight Java image
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy jar file
-COPY target/*.jar app.jar
+COPY . .
 
-# Run application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN ./mvnw clean package -DskipTests
+
+CMD ["java", "-jar", "target/your-app.jar"]
