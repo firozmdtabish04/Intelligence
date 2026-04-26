@@ -1,49 +1,49 @@
-package com.ai.intelligence.controller;
+// package com.ai.intelligence.controller;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
+// import org.springframework.web.bind.annotation.*;
+// import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Map;
+// import java.util.Map;
 
-@RestController
-@RequestMapping("/api/chat")
-@CrossOrigin(origins = "http://localhost:5173")
-public class ChatController {
+// @RestController
+// @RequestMapping("/api/chat")
+// @CrossOrigin(origins = "http://localhost:5173")
+// public class ChatController {
 
-    private final WebClient webClient;
+// private final WebClient webClient;
 
-    public ChatController() {
-        this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:11434")
-                .build();
-    }
+// public ChatController() {
+// this.webClient = WebClient.builder()
+// .baseUrl("http://localhost:11434")
+// .build();
+// }
 
-    @PostMapping
-    public Map<String, String> chat(@RequestBody Map<String, String> request) {
+// @PostMapping
+// public Map<String, String> chat(@RequestBody Map<String, String> request) {
 
-        String prompt = request.get("message");
+// String prompt = request.get("message");
 
-        Map<String, Object> body = Map.of(
-                "model", "llama3",
-                "prompt", prompt,
-                "stream", false);
+// Map<String, Object> body = Map.of(
+// "model", "llama3",
+// "prompt", prompt,
+// "stream", false);
 
-        try {
-            Map response = webClient.post()
-                    .uri("/api/generate")
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(Map.class) // ✅ parse JSON directly
-                    .block();
+// try {
+// Map response = webClient.post()
+// .uri("/api/generate")
+// .bodyValue(body)
+// .retrieve()
+// .bodyToMono(Map.class) // ✅ parse JSON directly
+// .block();
 
-            String reply = response != null
-                    ? response.get("response").toString()
-                    : "No response from AI";
+// String reply = response != null
+// ? response.get("response").toString()
+// : "No response from AI";
 
-            return Map.of("reply", reply);
+// return Map.of("reply", reply);
 
-        } catch (Exception e) {
-            return Map.of("reply", "Error: Unable to reach AI server");
-        }
-    }
-}
+// } catch (Exception e) {
+// return Map.of("reply", "Error: Unable to reach AI server");
+// }
+// }
+// }
