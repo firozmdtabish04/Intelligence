@@ -3,6 +3,7 @@ package com.ai.intelligence.service;
 import com.ai.intelligence.model.User;
 import com.ai.intelligence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,21 +12,39 @@ import java.util.Optional;
 public class AuthService {
 
     @Autowired
-    private UserRepository repo;
+    private UserRepository userRepository;
 
-    public String register(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent()) {
-            return "User already exists";
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // ✅ REGISTER
+    public void register(User user) {
+
+        // Check duplicate email
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
         }
-        repo.save(user);
-        return "User registered successfully";
+
+        // 🔐 Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepository.save(user);
     }
 
+    // ✅ LOGIN
     public Optional<User> login(String email, String password) {
-        Optional<User> user = repo.findByEmail(email);
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
-            return user;
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // 🔐 Compare encrypted password
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return Optional.of(user);
+            }
         }
+
         return Optional.empty();
     }
 }
